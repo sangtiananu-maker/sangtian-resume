@@ -1,0 +1,8 @@
+# Large raw backup files not needed for web deployment
+assets/Multiverse_of_Tian_Original.pdf
+assets/images_backup_raw/
+
+# Vercel / local temporary files
+.vercel
+node_modules
+*.log

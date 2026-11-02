@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Multiverse of Sangtian Anurakwongsri | PharmD Resume & Portfolio</title>
+  <meta name="description" content="Personal interactive resume of Sangtian Anurakwongsri (Tian) — PharmD with a unique blend of R&D Expertise & Strategic Business Development Mindset." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Boot / Landing Sequence Animation (Plays on page load/refresh) -->
+  <div id="boot-overlay" class="boot-overlay" role="dialog" aria-modal="true" aria-label="Welcome Loading Screen">
+    <button id="boot-skip-btn" class="boot-skip-btn" aria-label="Skip Introduction">
+      <span>Skip Intro [ESC]</span>
+      <span class="boot-arrow">→</span>
+    </button>
+    <div class="boot-container">
+      <div class="boot-orb-wrap">
+        <div class="boot-ring boot-ring-outer"></div>
+        <div class="boot-ring boot-ring-inner"></div>
+        <div class="boot-orb"></div>
+      </div>
+      <div class="boot-terminal-line">
+        <span class="boot-pulse-dot"></span>
+        <span class="boot-terminal-tag">SYSTEM INITIALIZED // CANDIDATE TERMINAL</span>
+      </div>
+      <p class="boot-kicker">Welcome Interviewer! You’re now landing on....</p>
+    </div>
+  </div>
+
+  <canvas id="cosmic-canvas" aria-hidden="true"></canvas>
+
+  <!-- Sticky Navigation HUD -->
+  <header class="hud-header">
+    <div class="hud-inner">
+      <a href="#hero" class="brand-logo" aria-label="Home">
+        <span class="brand-orb"></span>
+      </a>
+      <nav class="hud-nav" aria-label="Primary Navigation">
+        <a href="#hero" class="nav-link active" data-section="hero">01. Identity</a>
+        <a href="#education" class="nav-link" data-section="education">02. Education</a>
+        <a href="#storyboard" class="nav-link" data-section="storyboard">03. Work Experience</a>
+        <a href="#milestones" class="nav-link" data-section="milestones">04. Impact &amp; KPIs</a>
+        </nav>
+      
+    </div>
+  </header>
+
+  <main>
+    <!-- ==========================================
+         SECTION 01: EXECUTIVE SUMMARY & IDENTITY
+         ========================================== -->
+    <section id="hero" class="section hero-section">
+      <div class="container">
+        <div class="welcome-banner reveal">
+          <span class="mono-badge">01 // EXECUTIVE SUMMARY &amp; IDENTITY</span>
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-copy reveal">
+            <h1 class="hero-title">
+              The multiverse of <span class="gradient-text">Sangtian Anurakwongsri</span>
+            </h1>
+            <p class="hero-lead">
+              Hi, I'm <strong>Tian (Sangtian)</strong> — A <strong>PharmD</strong> with a unique blend of
+              <span class="lead-pill-pair"><span class="hero-pill-badge hero-pill-cyan">R&amp;D Expertise</span> <span class="pill-amp">&amp;</span> <span class="hero-pill-badge hero-pill-gold">Strategic Dev Mindset</span></span>.
+              I specialize in bridging the gap between complex science &amp; business solutions.
+            </p>
+
+            <div class="hero-badges">
+              <div class="stat-pill">
+                <span class="stat-value">PharmD</span>
+                <span class="stat-label">Chulalongkorn Univ. (2024)</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">260%</span>
+                <span class="stat-label">Export Sales Growth (PAC)</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">6+</span>
+                <span class="stat-label">New R&amp;D Formulations</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">1st Prize</span>
+                <span class="stat-label">CU Startup Pitching Winner</span>
+              </div>
+            </div>
+
+            <div class="hero-cta-row">
+              <a href="#storyboard" class="btn-primary">Explore Career Storyboard</a>
+              <a href="#milestones" class="btn-secondary">View 260% Growth Proof</a>
+            </div>
+          </div>
+
+          <!-- Hero Portrait & Multiverse Orbit Showcase (Right Column of Hero Grid) -->
+          <div class="hero-visual reveal">
+            <div class="portrait-stage">
+              <div class="orbit-ring orbit-ring-outer"></div>
+              <div class="orbit-ring orbit-ring-inner"></div>
+              <div class="main-portrait-frame">
+                <img src="assets/images/img_010.jpg" alt="Sangtian Anurakwongsri Portrait" class="main-portrait-img" />
+                <div class="portrait-caption">
+                  <span class="mono-tag">MR. SANGTIAN ANURAKWONGSRI</span>
+                  <span>R&amp;D Pharmacist &times; Product Specialist (Export)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Bar -->
+        <div class="telemetry-bar reveal">
+          <div class="telemetry-item">
+            <div class="telemetry-top">
+              <span class="telemetry-num">260%</span>
+              <span class="telemetry-title">Sales Growth</span>
+            </div>
+            <span class="telemetry-desc">Commercial revenue &amp; prescription surge across 7 regional branches in Laos</span>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-top">
+              <span class="telemetry-num">6</span>
+              <span class="telemetry-title">R&amp;D Projects</span>
+            </div>
+            <span class="telemetry-desc">Concept-to-pilot formulations: Tablets, Spray, Injection, Cream &amp; MUPS</span>
+          </div>
+          <div class="telemetry-item">
+            <div class="telemetry-top">
+              <span class="telemetry-num">50+</span>
+              <span class="telemetry-title">Leads / Day</span>
+            </div>
+            <span class="telemetry-desc">Qualified B2B partnerships &amp; high-value contacts at CPHI SEA &amp; Malaysia</span>
+          </div>
+        </div>
+
+        <!-- The Multiverse Constellation (9 Core Dimensions) -->
+        <div class="constellation-card reveal">
+          <div class="constellation-header">
+            <div>
+              <span class="mono-tag">INTERACTIVE CONSTELLATION // 9 MULTIVERSE DIMENSIONS</span>
+              <h2 class="sub-heading">Every Facet of Tian’s Multiverse</h2>
+            </div>
+          </div>
+          <div class="constellation-grid">
+            <figure class="orbit-item">
+              <img src="assets/images/img_011.jpg" alt="CPHI South East Asia Networking" />
+              <figcaption><span>01 // CPHI SEA</span>Global Pharma Networking</figcaption>
+            </figure>
+            <figure class="orbit-item">
+              <img src="assets/images/img_012.jpg" alt="Pharmaceutical Lab Cleanroom" />
+              <figcaption><span>02 // R&amp;D Product Development</span>Scale-Up &amp; GMP</figcaption>
+            </figure>
+            <figure class="orbit-item">
+              <img src="assets/images/img_017.jpg" alt="International Export Promotion in Laos" />
+              <figcaption><span>03 // Regional Export</span>Laos Market Campaign</figcaption>
+            </figure>
+            <figure class="orbit-item">
+              <img src="assets/images/img_018.jpg" alt="Medical Detailing with HCPs" />
+              <figcaption><span>04 // HCP Engagement</span>Scientific Detailing</figcaption>
+            </figure>
+            <figure class="orbit-item">
+              <img src="assets/images/img_014.jpg" alt="Chulalongkorn PharmD Graduation" />
+              <figcaption><span>05 // PharmD</span>Chulalongkorn Univ.</figcaption>
+            </figure>
+            <figure class="orbit-item orbit-item-unified">
+              <div class="unified-quad">
+                <img src="assets/images/img_013.jpg" alt="Explorer — Outdoor Mindset" />
+                <img src="assets/images/img_015.jpg" alt="Vocalist — Stage Confidence" />
+                <img src="assets/images/img_016.jpg" alt="Bouldering — Problem Solving" />
+                <img src="assets/images/img_019.jpg" alt="Golf — Focus &amp; Discipline" />
+              </div>
+              <figcaption class="unified-caption">
+                <span class="unified-badge">06 // GROWTH MINDSET</span>
+                <strong class="unified-title">Driven by Challenges, Constantly Evolving</strong>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- 3 Core Values Section (Adaptive, Creative, Solution-oriented + Portrait img_020.jpg) -->
+        <div class="core-pillars-layout reveal">
+          <div class="pillars-portrait-card">
+            <div class="pillars-img-wrap">
+              <img src="assets/images/img_020.jpg" alt="Sangtian Anurakwongsri Full Suit Portrait" />
+            </div>
+            <div class="pillars-portrait-overlay">
+              <span class="mono-tag">PROFESSIONAL IDENTITY</span>
+              <h3>Where Science Meets Commercial Strategy</h3>
+              <p>Combining PharmD analytical rigor with engaging communication and tech-enabled workflows.</p>
+            </div>
+          </div>
+
+          <div class="pillars-cards">
+            <article class="pillar-card pillar-adaptive">
+              <div class="pillar-icon-wrap">
+                <span class="pillar-index">01</span>
+                <span class="pillar-badge">CORE VALUE</span>
+              </div>
+              <h3 class="pillar-title">Adaptive</h3>
+              <p class="pillar-text">
+                Building seamless partnerships by collaborating effectively across generations and fostering strong professional relationships with diverse stakeholders.
+              </p>
+            </article>
+
+            <article class="pillar-card pillar-creative">
+              <div class="pillar-icon-wrap">
+                <span class="pillar-index">02</span>
+                <span class="pillar-badge">CORE VALUE</span>
+              </div>
+              <h3 class="pillar-title">Creative</h3>
+              <p class="pillar-text">
+                Transforming complex technical data into engaging stories using tech-tools and creative visuals.
+              </p>
+            </article>
+
+            <article class="pillar-card pillar-solution">
+              <div class="pillar-icon-wrap">
+                <span class="pillar-index">03</span>
+                <span class="pillar-badge">CORE VALUE</span>
+              </div>
+              <h3 class="pillar-title">Solution-oriented</h3>
+              <p class="pillar-text">
+                Optimizing performance through systematic workflows and proactive tech-based solutions to drive efficient growth.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ==========================================
+         SECTION 02: ACADEMIC & R&D INNOVATION
+         ========================================== -->
+    <section id="education" class="section education-section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="mono-badge">02 // ACADEMIC &amp; R&amp;D FOUNDATION</span>
+          <h2 class="section-title">Academic Foundation &amp; <span class="gradient-text">Award-Winning R&amp;D</span></h2>
+          <p class="section-subtitle">
+            From early formulation curiosity at Patumwan Demonstration School to winning 1st Prize at the Chulalongkorn University Startup Pitching Competition.
+          </p>
+        </div>
+
+        <!-- Education Timeline Cards -->
+        <div class="edu-grid reveal">
+          <!-- High School Card -->
+          <article class="edu-card">
+            <div class="edu-card-top">
+              <img src="assets/images/p2_sf0_MAHLyvpFs9M.png" alt="Patumwan Demonstration School Emblem" class="school-logo" />
+              <div class="edu-meta">
+                <span class="mono-tag">GRADUATION: 2018</span>
+                <h3>Patumwan Demonstration School</h3>
+                <p class="edu-program">High School — <strong>Sciences &amp; Mathematics Program</strong></p>
+              </div>
+            </div>
+
+            <div class="science-project-box">
+              <div class="project-header">
+                <span class="badge-gold">2017 SCIENCE PROJECT</span>
+                <h4>“Formulation of caffeine Milo cubes candy.”</h4>
+              </div>
+              <p class="project-desc">
+                The spark that ignited my passion for formulation science — combining everyday confectionery enjoyment with functional caffeine delivery in compressed Milo cubes.
+              </p>
+              <div class="project-photos-duo">
+                <figure class="img-frame">
+                  <img src="assets/images/img_021.jpg" alt="Cocoa and Raw Ingredients for Caffeine Milo Cubes" />
+                  <figcaption>Raw Cocoa &amp; Excipient Matrix</figcaption>
+                </figure>
+                <figure class="img-frame">
+                  <img src="assets/images/img_022.jpg" alt="Formulated Caffeine Milo Cubes Candy" />
+                  <figcaption>Compressed Caffeine Milo Cubes</figcaption>
+                </figure>
+              </div>
+            </div>
+          </article>
+
+          <!-- University Card -->
+          <article class="edu-card edu-card-chula">
+            <div class="edu-card-top">
+              <img src="assets/images/p2_sf1_MAHFN88rxJE.png" alt="Chulalongkorn University Faculty of Pharmaceutical Sciences Emblem" class="school-logo" />
+              <div class="edu-meta">
+                <span class="mono-tag">GRADUATION: 2024</span>
+                <h3>Chulalongkorn University</h3>
+                <p class="edu-program"><strong>PharmD</strong> — Faculty of Pharmaceutical Sciences</p>
+              </div>
+            </div>
+
+            <div class="chula-specs">
+              <div class="spec-chip">
+                <span class="spec-label">Major Track</span>
+                <span class="spec-val">Pharmaceutical Sciences</span>
+              </div>
+              <div class="spec-chip">
+                <span class="spec-label">Focus Areas</span>
+                <span class="spec-val">Drug Research &amp; Development, Drug Manufacturing</span>
+              </div>
+              <div class="spec-chip">
+                <span class="spec-label">Department</span>
+                <span class="spec-val">Pharmacognosy</span>
+              </div>
+            </div>
+
+            <div class="chula-photos-duo">
+              <figure class="img-frame">
+                <img src="assets/images/img_023.jpg" alt="Chulalongkorn Pharmaceutical Sciences Cohort Graduation" />
+                <figcaption>Faculty of Pharmaceutical Sciences Cohort</figcaption>
+              </figure>
+              <figure class="img-frame">
+                <img src="assets/images/img_014.jpg" alt="Sangtian Anurakwongsri Chulalongkorn PharmD Graduation" />
+                <figcaption>PharmD — Class of 2024</figcaption>
+              </figure>
+            </div>
+          </article>
+        </div>
+
+        <!-- Senior Thesis & Startup Pitching Winner Showcase: HERB GUARDIAN -->
+        <div class="thesis-showcase reveal">
+          <div class="thesis-banner">
+            <div class="thesis-title-block">
+              <div class="award-pill-row">
+                <span class="badge-emerald">SENIOR THESIS PROJECT</span>
+                <span class="badge-gold">🏆 1ST PRIZE — CU STARTUP PITCHING WINNER</span>
+              </div>
+              <h3>HERB GUARDIAN — Natural Alcohol-Free Antiviral &amp; Antibacterial Hand Sanitizer</h3>
+              <p class="thesis-quote">
+                “Formulated a natural hand sanitizer that can effectively combat coronavirus and common bacteria without the use of alcohol.”
+              </p>
+            </div>
+          </div>
+
+          <!-- 4-Step Scientific Pipeline -->
+          <div class="pipeline-grid">
+            <div class="pipeline-step">
+              <div class="step-head">
+                <span class="step-num">STEP 01</span>
+                <h4>Extract</h4>
+              </div>
+              <figure class="img-frame">
+                <img src="assets/images/img_002.jpg" alt="Step 1: Herbal Extraction in Pharmacognosy Lab" />
+              </figure>
+              <p>Bioactive phytochemical extraction from selected medicinal plants in the Department of Pharmacognosy.</p>
+            </div>
+
+            <div class="pipeline-step">
+              <div class="step-head">
+                <span class="step-num">STEP 02</span>
+                <h4>Standardized</h4>
+              </div>
+              <figure class="img-frame">
+                <img src="assets/images/img_001.jpg" alt="Step 2: Standardized Active Marker Analysis" />
+              </figure>
+              <p>Quantitative standardization of active herbal extract profiles to ensure batch-to-batch potency.</p>
+            </div>
+
+            <div class="pipeline-step">
+              <div class="step-head">
+                <span class="step-num">STEP 03</span>
+                <h4>Formulate</h4>
+              </div>
+              <figure class="img-frame">
+                <img src="assets/images/img_000.jpg" alt="Step 3: Formulating Alcohol-Free Hand Sanitizer Spray" />
+              </figure>
+              <p>Alcohol-free spray formulation engineered for skin gentleness, stability, and rapid antimicrobial action.</p>
+            </div>
+
+            <div class="pipeline-step">
+              <div class="step-head">
+                <span class="step-num">STEP 04</span>
+                <h4>Evaluate</h4>
+              </div>
+              <figure class="img-frame">
+                <img src="assets/images/img_003_graph.jpg" alt="Step 4: Antimicrobial MIC & Viral Inactivation Evaluation Graph" />
+              </figure>
+              <p>Laboratory efficacy verification against Coronavirus and pathogenic bacteria (MIC / MBC evaluation).</p>
+            </div>
+          </div>
+
+          <!-- Startup Pitching & Innovation Show Gallery (Startup Pitching & Innovation Show) -->
+          <div class="pitch-gallery-block">
+            <div class="pitch-gallery-header">
+              <span class="mono-tag">INNOVATION HONORS &amp; COMMERCIAL ACCELERATION</span>
+              <h4>1st Prize Winner &amp; Project Grant Recognition</h4>
+            </div>
+            <div class="pitch-gallery-grid-compact">
+              <figure class="pitch-card">
+                <img src="assets/images/img_009.jpg" alt="1st Prize Winner Award at Pharmaceutical Innovation Show" />
+                <figcaption><strong>รางวัลชนะเลิศ (1st Prize Winner)</strong> — Pharmaceutical Innovation Show &amp; CU Startup Pitching</figcaption>
+              </figure>
+              <figure class="pitch-card">
+                <img src="assets/images/img_007.jpg" alt="Awarded Research &amp; Innovation Grant from T.MAN Pharmaceutical" />
+                <figcaption><strong>Project Funding Grant Recipient</strong> — Awarded research &amp; project grant from T.MAN Pharmaceutical Co., Ltd.</figcaption>
+              </figure>
+              <figure class="pitch-card">
+                <img src="assets/images/img_004.jpg" alt="Senior Thesis Research Poster Presentation" />
+                <figcaption>Senior Thesis Scientific Poster Defense</figcaption>
+              </figure>
+              <figure class="pitch-card pitch-card-nocaption">
+                <img src="assets/images/img_025.jpg" alt="Herb Guardian Formulation Prototype" />
+              </figure>
+            </div>
+          </div>        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 03: PROFESSIONAL STORYBOARD
+         ========================================== -->
+    <section id="storyboard" class="section storyboard-section">
+      <div class="container">
+        <div class="storyboard-hero-banner reveal">
+          <div class="storyboard-intro">
+            <span class="mono-badge">03 // CAREER STORYBOARD</span>
+            <h2 class="section-title">My <span class="gradient-text">Storyboard</span></h2>
+            <p class="section-subtitle">
+              A purposeful progression across Marketing, Pharmaceutical R&amp;D, and International Commercial Export — uniting laboratory depth with market execution.
+            </p>
+          </div>
+          <div class="storyboard-portrait-mini">
+            <img src="assets/images/img_026.jpg" alt="Sangtian Storyboard Portrait" />
+          </div>
+        </div>
+
+        <div class="career-timeline">
+          <!-- ROLE 1 (Most Recent / Present): PHARMA ALLIANCE CO., LTD. -->
+          <article class="role-card role-pac reveal">
+            <div class="role-header">
+              <div class="role-logo-box">
+                <img src="assets/images/p3_sf7_MAG3oVXL2RM.png" alt="Pharma Alliance Co., Ltd. (PAC) Logo" class="company-logo" />
+              </div>
+              <div class="role-title-group">
+                <div class="role-period-row">
+                  <span class="badge-live">CURRENT ROLE • AUG 2025 – PRESENT</span>
+                  <span class="mono-tag">INTERNATIONAL EXPORT // LAOS MARKET</span>
+                </div>
+                <h3>Pharma Alliance Co., Ltd. (PAC)</h3>
+                <p class="role-position">Product Specialist (Export)</p>
+              </div>
+            </div>
+
+            <div class="role-body-grid">
+              <div class="role-details">
+                <div class="responsibility-list">
+                  <div class="resp-item">
+                    <h4>Strategic Market Growth &amp; Sales Enablement</h4>
+                    <p>Drove prescription rates and revenue expansion in the <strong>Laos market</strong> by delivering persuasive medical detailing to HCPs and high-impact scientific product training for local distributor sales teams.</p>
+                  </div>
+                  <div class="resp-item">
+                    <h4>KOL &amp; Stakeholder Management</h4>
+                    <p>Cultivated and maintained influential relationships with Key Opinion Leaders (KOLs) and healthcare professionals to build long-term brand advocacy and clinical trust.</p>
+                  </div>
+                  <div class="resp-item">
+                    <h4>Regional Campaign Execution</h4>
+                    <p>Collaborated with international partners to design and execute localized promotional campaigns, driving brand visibility and market penetration across key pharmacy networks.</p>
+                  </div>
+                </div>
+
+                <div class="skills-received-box">
+                  <span class="mono-tag">SKILLS RECEIVED</span>
+                  <div class="skill-tags">
+                    <span class="skill-chip chip-cyan">KOL &amp; HCP Engagement</span>
+                    <span class="skill-chip chip-cyan">Medical Detailing</span>
+                    <span class="skill-chip chip-cyan">Scientific Product Training</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="role-gallery">
+                <div class="photo-mosaic-pac">
+                  <figure class="img-frame mosaic-wide white-border-card">
+                    <img src="assets/images/f_155_1562x1205.png" alt="9th Lao Gastroenterology and Hepatology Conference Booth" />
+                    <figcaption>9th Lao Gastroenterology &amp; Hepatology Conference — Medical Booth &amp; KOL Detailing</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_152_1119x1384.png" alt="Hospital Detailing in Vientiane Laos" />
+                    <figcaption>Hospital &amp; Clinic Engagement in Laos</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_153_1096x1404.png" alt="1-on-1 Medical Detailing with Physicians" />
+                    <figcaption>1-on-1 Physician Scientific Detailing</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_154_1532x1205.png" alt="Distributor Sales Team Product Training" />
+                    <figcaption>Distributor Sales Team Product Training</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_156_1563x1205.png" alt="Regional Pharmacy Network Campaign in Laos" />
+                    <figcaption>Key Pharmacy Network Execution</figcaption>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ROLE 2: UNION DRUG LABS -->
+          <article class="role-card role-udl reveal">
+            <div class="role-header">
+              <div class="role-logo-box">
+                <img src="assets/images/p4_sf0_MAHFll7DrQE.png" alt="Union Drug Labs (UDL) Logo" class="company-logo" />
+              </div>
+              <div class="role-title-group">
+                <div class="role-period-row">
+                  <span class="badge-gold">MAY 2024 – JUL 2025</span>
+                  <span class="mono-tag">PHARMACEUTICAL R&amp;D</span>
+                </div>
+                <h3>Union Drug Labs</h3>
+                <p class="role-position">Research &amp; Development Pharmacist</p>
+              </div>
+            </div>
+
+            <div class="udl-projects-grid">
+              <!-- Main Project -->
+              <div class="udl-project-panel">
+                <div class="panel-tag-row">
+                  <span class="badge-emerald">MAIN PROJECT</span>
+                  <span class="mono-tag">CONCEPT TO SCALE-UP</span>
+                </div>
+                <h4>6 New Pharmaceutical Products Development</h4>
+                <p>
+                  <strong>6 New pharmaceutical products development</strong>, managing the process from concept through scale-up. Conducted detailed market and feasibility research to guide product selection, maximizing market potential and informing go/no-go decisions.
+                </p>
+                <div class="dosage-forms-box">
+                  <span class="mono-tag">DOSAGE FORMS DEVELOPED:</span>
+                  <div class="dosage-pills">
+                    <span>💉 Solution for injection</span>
+                    <span>🧴 Topical spray</span>
+                    <span>💊 Tablets</span>
+                    <span>🧪 Cream</span>
+                    <span>🔬 MUPS tablets</span>
+                  </div>
+                </div>
+                <figure class="img-frame udl-collage-frame">
+                  <img src="assets/images/f_117_1839x2237.png" alt="UDL Laboratory Formulation and Scale-Up Collage" />
+                  <figcaption>End-to-End Formulation &amp; Pilot Scale-Up at Union Drug Labs</figcaption>
+                </figure>
+              </div>
+
+              <!-- Side Projects & Skills -->
+              <div class="udl-project-panel">
+                <div class="panel-tag-row">
+                  <span class="badge-gold">SIDE PROJECTS</span>
+                  <span class="mono-tag">COMMERCIAL &amp; CROSS-FUNCTIONAL</span>
+                </div>
+
+                <div class="responsibility-list">
+                  <div class="resp-item">
+                    <h4>1. Supplier &amp; Outsourcing</h4>
+                    <p>Managed end-to-end communication with suppliers &amp; outsource partners to resolve technical issues and ensure project milestones.</p>
+                  </div>
+                  <div class="resp-item">
+                    <h4>2. CPHI International Networking</h4>
+                    <p>Scouted potential customers &amp; business opportunities at <strong>CPHI (Thailand &amp; Malaysia)</strong>, expanding both domestic &amp; international networks.</p>
+                  </div>
+                  <div class="resp-item">
+                    <h4>3. Sales Training &amp; Pharmacy Response</h4>
+                    <p>Empowered the sales team with deep product insights and scientific selling points to boost commercial confidence and performance.</p>
+                  </div>
+                </div>
+
+                <div class="udl-side-photos">
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_128_1568x1153.png" alt="Sales Training Session at UDL" />
+                    <figcaption>Sales Team Product Training</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_130_1568x1284.png" alt="CPHI Exhibition Booth & Networking" />
+                    <figcaption>CPHI Thailand &amp; Malaysia Networking</figcaption>
+                  </figure>
+                  <figure class="img-frame white-border-card">
+                    <img src="assets/images/f_131_1381x1763.png" alt="Scientific Presentation & Pharmacy Response" />
+                    <figcaption>Technical &amp; Clinical Support</figcaption>
+                  </figure>
+                </div>
+
+                <div class="skills-received-box">
+                  <span class="mono-tag">SKILLS RECEIVED &amp; EPIPHANY</span>
+                  <div class="skill-tags">
+                    <span class="skill-chip chip-gold">Project Management</span>
+                    <span class="skill-chip chip-gold">Supplier Management</span>
+                    <span class="skill-chip chip-gold">Systematic Problem-solving</span>
+                    <span class="skill-chip chip-gold">Cross-functional Collaboration</span>
+                  </div>
+                  <div class="thought-bubbles">
+                    <span class="thought-pill">💡 “Sales &amp; Marketing inspired me”</span>
+                    <span class="thought-pill">🎯 “I like product training”</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ROLE 3: EISAI (THAILAND) MARKETING CO., LTD. -->
+          <article class="role-card role-eisai reveal">
+            <div class="role-header">
+              <div class="role-logo-box">
+                <img src="assets/images/p3_sf1_MAGju3DNYuo.png" alt="Eisai (Thailand) Marketing Co., Ltd Logo" class="company-logo" />
+              </div>
+              <div class="role-title-group">
+                <div class="role-period-row">
+                  <span class="badge-purple">SEP 2023 – NOV 2023</span>
+                  <span class="mono-tag">PHARMACEUTICAL MARKETING INTERNSHIP</span>
+                </div>
+                <h3>Eisai (Thailand) Marketing Co., Ltd</h3>
+                <p class="role-position">Marketing Intern</p>
+              </div>
+            </div>
+
+            <div class="role-body-grid">
+              <div class="role-details">
+                <p class="role-summary">
+                  Immersed in multinational pharmaceutical brand strategy, patient-centric campaign ideation (`hhc` — human health care philosophy), and creative medical marketing collateral development.
+                </p>
+                <div class="skills-received-box">
+                  <span class="mono-tag">SKILLS RECEIVED</span>
+                  <div class="skill-tags">
+                    <span class="skill-chip chip-purple">Creativity</span>
+                    <span class="skill-chip chip-purple">Marketing Mindset</span>
+                    <span class="skill-chip chip-purple">Empathy</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="eisai-photos-trio">
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_102_1633x1279.png" alt="Eisai Thailand Marketing Team Presentation" />
+                  <figcaption>Marketing Strategy Presentation</figcaption>
+                </figure>
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_103_1633x1307.png" alt="Eisai Thailand Internship Cohort & Mentors" />
+                  <figcaption>Eisai Marketing Team Collaboration</figcaption>
+                </figure>
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_104_1699x1355.png" alt="Eisai Campaign Workshop Activity" />
+                  <figcaption>Human Health Care (hhc) Campaign Workshop</figcaption>
+                </figure>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- ==========================================
+         SECTION 04: KEY MILESTONES & PERFORMANCE IMPACT
+         ========================================== -->
+    <section id="milestones" class="section milestones-section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="mono-badge">04 // KEY MILESTONES &amp; PERFORMANCE IMPACT</span>
+          <h2 class="section-title">Key Milestones &amp; <span class="gradient-text">Measurable Impact</span></h2>
+          <p class="section-subtitle">
+            Concrete achievements across Pharmaceutical R&amp;D Scale-Up, Regulatory Documentation (ACTD Part P2), CPHI Lead Generation, and 260% Export Revenue Expansion.
+          </p>
+        </div>
+
+        <!-- Milestone Switcher Tabs -->
+        <div class="milestone-tabs reveal" role="tablist">
+          <button class="milestone-tab active" data-target="panel-all" role="tab" aria-selected="true">All Milestones (6)</button>
+          <button class="milestone-tab" data-target="panel-pac" role="tab" aria-selected="false">Pharma Alliance (PAC) — Commercial &amp; Ops</button>
+          <button class="milestone-tab" data-target="panel-udl" role="tab" aria-selected="false">Union Drug Labs (UDL) — R&amp;D &amp; Ops</button>
+        </div>
+
+        <!-- PAC MILESTONES -->
+        <div class="milestone-group" data-group="pac">
+          <div class="group-brand-bar reveal">
+            <img src="assets/images/p3_sf7_MAG3oVXL2RM.png" alt="Pharma Alliance Logo" class="group-logo" />
+            <div>
+              <span class="mono-tag">KEY MILESTONES AT PHARMA ALLIANCE (PAC)</span>
+              <h3>Commercial Surge, Operational Architecture &amp; Granular Analytics</h3>
+            </div>
+          </div>
+
+          <div class="milestones-bento">
+            <!-- PAC Milestone 1: 260% Sales Growth -->
+            <article class="bento-card bento-wide reveal">
+              <div class="bento-content">
+                <span class="badge-emerald">MILESTONE 01 // COMMERCIAL IMPACT</span>
+                <h4>Commercial Impact: Driving 260% Sales Growth</h4>
+                <p>
+                  Successfully boosted product sales in Laos by <strong>260%</strong> through high-impact <strong>Product Training</strong> and targeted <strong>Medical Detailing</strong> with local healthcare professionals (HCPs), creating a sustained upward trajectory across all 7 distribution branches (SSA1–SSA7).
+                </p>
+                <div class="kpi-Callout-row">
+                  <div class="kpi-mini">
+                    <strong>+260%</strong>
+                    <span>Peak Monthly Volume Surge</span>
+                  </div>
+                  <div class="kpi-mini">
+                    <strong>SSA1 – SSA7</strong>
+                    <span>7 Regional Branches Tracked</span>
+                  </div>
+                  <div class="kpi-mini">
+                    <strong>Apr 2025 – May 2026</strong>
+                    <span>Sustained Growth Trajectory</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bento-visual">
+                <figure class="img-frame chart-frame">
+                  <img src="assets/images/p4_sf2_MAHM_ErPyNI.png" alt="Branch Performance Trend Chart Showing 260% Sales Growth" />
+                  <figcaption>Branch Performance Trend (Apr 2025 – May 2026) — Driving 260% Sales Growth</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <!-- PAC Milestone 2: Architect of Departmental Efficiency -->
+            <article class="bento-card reveal">
+              <div class="bento-content">
+                <span class="badge-cyan">MILESTONE 02 // WORKFLOW ARCHITECTURE</span>
+                <h4>Architect of Departmental Efficiency</h4>
+                <p>
+                  Initiated and structured a <strong>centralized shared drive</strong> (applying systematic <strong>GMP principles</strong> from R&amp;D) and a <strong>shared departmental calendar</strong> to streamline team workflows and cross-functional visibility.
+                </p>
+              </div>
+              <div class="bento-visual-duo">
+                <figure class="img-frame">
+                  <img src="assets/images/p4_sf3_MAHHeJ87zFI.png" class="dashboard-img" alt="GMP-Structured Centralized Shared Drive" />
+                  <figcaption>Centralized Shared Drive (GMP Folder Architecture)</figcaption>
+                </figure>
+                <figure class="img-frame">
+                  <img src="assets/images/p4_sf3_MAHHeXdxWbM.png" class="dashboard-img" alt="Departmental Shared Calendar System" />
+                  <figcaption>Shared Team Operations Calendar</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <!-- PAC Milestone 3: Deep-Dive Sales Tracking -->
+            <article class="bento-card reveal">
+              <div class="bento-content">
+                <span class="badge-gold">MILESTONE 03 // DATA-DRIVEN STRATEGY</span>
+                <h4>Deep-Dive Sales Tracking</h4>
+                <p>
+                  Developed a <strong>granular sales tracking system</strong> for partner pharmacies in <strong>Vientiane, Laos</strong>, enabling precise performance monitoring across individual SKUs and branches to inform data-driven commercial strategies.
+                </p>
+              </div>
+              <div class="bento-visual-duo">
+                <figure class="img-frame">
+                  <img src="assets/images/p4_sf3_MAHHeTeMqak.png" class="dashboard-img" alt="Granular Monthly SKU Sales Tracking Dashboard" />
+                  <figcaption>SKU-Level Monthly Performance Analytics</figcaption>
+                </figure>
+                <figure class="img-frame">
+                  <img src="assets/images/p4_sf3_MAHHeZppwuc.png" class="dashboard-img" alt="Sales Quantity by Branch Comparison Chart" />
+                  <figcaption>Sales Quantity by Branch (Mar 2026 vs Feb 2026)</figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- UDL MILESTONES -->
+        <div class="milestone-group" data-group="udl">
+          <div class="group-brand-bar reveal">
+            <img src="assets/images/p4_sf0_MAHFll7DrQE.png" alt="Union Drug Labs Logo" class="group-logo" />
+            <div>
+              <span class="mono-tag">KEY MILESTONES AT UNION DRUG LABS (UDL)</span>
+              <h3>Pilot Scale-Up, Regulatory Dossiers &amp; International Networking</h3>
+            </div>
+          </div>
+
+          <div class="milestones-bento">
+            <!-- UDL Milestone 1: Big small-win in Product Development -->
+            <article class="bento-card bento-wide reveal">
+              <div class="bento-content">
+                <span class="badge-gold">MILESTONE 04 // FORMULATION &amp; REGULATORY</span>
+                <h4>Big small-win in Product Development</h4>
+                <ul class="milestone-bullets">
+                  <li><strong>End-to-End Formulation:</strong> Successfully developed <strong>Antifungal Tablets</strong> and <strong>Antifungal Solution Spray</strong> from initial concept to pilot scale.</li>
+                  <li><strong>Scale-Up Execution:</strong> Directed the <strong>3-lot Pilot Scale production</strong> for the Antifungal Spray, ensuring full readiness for commercial manufacturing.</li>
+                  <li><strong>Regulatory Documentation:</strong> Authored <strong>ACTD Part P2 (Formulation Development)</strong> to support regulatory affairs and dossier registration.</li>
+                </ul>
+              </div>
+              <div class="bento-visual-trio">
+                <figure class="img-frame">
+                  <img src="assets/images/f_170_clean.png" alt="Antifungal Tablets Formulation with UDL Debossing" />
+                  <figcaption>Antifungal Tablets (UDL Debossed)</figcaption>
+                </figure>
+                <figure class="img-frame">
+                  <img src="assets/images/f_173_clean.png" alt="Antifungal Solution Spray Prototype" />
+                  <figcaption>Antifungal Solution Spray</figcaption>
+                </figure>
+                <figure class="img-frame">
+                  <img src="assets/images/f_172_clean.png" alt="3-Lot Pilot Scale Production Samples" />
+                  <figcaption>3-Lot Pilot Scale Batch Readiness</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <!-- UDL Milestone 2: Bridging the Gap Between Science & Sales -->
+            <article class="bento-card reveal">
+              <div class="bento-content">
+                <span class="badge-emerald">MILESTONE 05 // COMMERCIAL ENABLEMENT</span>
+                <h4>Bridging the Gap Between Science &amp; Sales</h4>
+                <p>
+                  Enhanced sales team performance by creating <strong>high-impact technical materials</strong> and conducting comprehensive <strong>product training sessions</strong> that translated complex pharmacology into persuasive clinical selling points.
+                </p>
+              </div>
+              <div class="bento-visual-duo">
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_177_1593x1205.png" alt="Conducting Scientific Product Training for Sales Team" />
+                  <figcaption>Interactive Sales Enablement Session</figcaption>
+                </figure>
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_178_1823x1205.png" alt="High-Impact Technical Training Presentation" />
+                  <figcaption>Translating Pharmacology to Commercial Value</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <!-- UDL Milestone 3: Top Performer at CPHI -->
+            <article class="bento-card reveal">
+              <div class="bento-content">
+                <span class="badge-cyan">MILESTONE 06 // INTERNATIONAL NETWORKING</span>
+                <h4>Top Performer at CPHI</h4>
+                <p>
+                  Recognized as a <strong>lead networking participant</strong>, successfully generating <strong>50+ qualified business contacts per day</strong> to drive new B2B and international partnership opportunities.
+                </p>
+              </div>
+              <div class="bento-visual-duo">
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_179_1576x1196.png" alt="Lead Networking Participant at CPHI Exhibition" />
+                  <figcaption>50+ Qualified Business Contacts / Day at CPHI</figcaption>
+                </figure>
+                <figure class="img-frame white-border-card">
+                  <img src="assets/images/f_180_921x1181.png" alt="Sangtian at CPHI South East Asia International Networking" />
+                  <figcaption>CPHI South East Asia Lead Representative</figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer & Compact Executive Contact Zone -->
+  <footer id="contact" class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-contact-compact reveal">
+        <div class="contact-compact-top">
+          <span class="mono-tag">CONTACT</span>
+          <h4 class="contact-compact-title">Connect &amp; Collaborate</h4>
+        </div>
+
+        <div class="contact-compact-grid">
+          <!-- PHONE -->
+          <a href="tel:+66800239930" class="contact-compact-item" title="Call Sangtian">
+            <span class="compact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </span>
+            <div class="compact-info">
+              <span class="compact-lbl">PHONE</span>
+              <strong class="compact-val">+6680-023-9930</strong>
+            </div>
+          </a>
+
+          <!-- EMAIL -->
+          <a href="mailto:sangtian.rx@gmail.com" class="contact-compact-item" title="Send Email">
+            <span class="compact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </span>
+            <div class="compact-info">
+              <span class="compact-lbl">E-MAIL</span>
+              <strong class="compact-val">sangtian.rx@gmail.com</strong>
+            </div>
+          </a>
+
+          <!-- LINE -->
+          <div class="contact-compact-item contact-compact-line">
+            <span class="compact-icon compact-icon-line">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 10.3c0-4.6-4.9-8.3-11-8.3C6.9 2 2 5.7 2 10.3c0 4.1 3.7 7.6 8.7 8.2.3.1.8.2 1 .7.1.3.1.8 0 1.2l-.4 1.7c-.1.5-.4 1.7.7 1 1.1-.8 6.1-3.6 8.3-6.2 2.4-2.1 3.7-4.4 3.7-6.6z"/>
+              </svg>
+            </span>
+            <div class="compact-info">
+              <span class="compact-lbl">LINE</span>
+              <strong class="compact-val">Sangtian5243</strong>
+            </div>
+            <a href="https://line.me/ti/p/~Sangtian5243" target="_blank" rel="noopener noreferrer" class="btn-add-line-compact" title="Add Line Friend directly">
+              <span>Add Line</span>
+            </a>
+          </div>
+
+          <!-- ADDRESS -->
+          <div class="contact-compact-item contact-compact-address" title="2 Samakki Rd., Thasai, Nonthaburi, Thailand 11000">
+            <span class="compact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </span>
+            <div class="compact-info">
+              <span class="compact-lbl">ADDRESS</span>
+              <span class="compact-val-addr">2 Samakki Rd., Thasai, Nonthaburi 11000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div class="footer-brand-micro">
+          <span class="brand-orb"></span>
+          <span class="footer-copy-text">Sangtian Anurakwongsri PharmD Portfolio</span>
+        </div>
+        <div class="footer-actions">
+          <a href="#hero" class="btn-primary btn-sm btn-back-top" aria-label="Back to Top">
+            <span>Back to Top</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 15l-6-6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
