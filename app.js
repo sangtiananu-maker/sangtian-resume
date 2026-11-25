@@ -116,7 +116,23 @@ function initScrollSpy() {
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
   const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
   const header = document.querySelector('.hud-header');
+  const navContainer = document.querySelector('.hud-nav');
   let ticking = false;
+  let lastActiveId = null;
+
+  function scrollNavToActive(activeLink) {
+    if (!navContainer || !activeLink) return;
+    if (navContainer.scrollWidth <= navContainer.clientWidth) return;
+    const navRect = navContainer.getBoundingClientRect();
+    const linkRect = activeLink.getBoundingClientRect();
+    const linkCenterInNav = (linkRect.left - navRect.left) + navContainer.scrollLeft + (linkRect.width / 2);
+    const maxScroll = navContainer.scrollWidth - navContainer.clientWidth;
+    const targetLeft = Math.max(0, Math.min(maxScroll, linkCenterInNav - (navRect.width / 2)));
+    navContainer.scrollTo({
+      left: targetLeft,
+      behavior: 'smooth'
+    });
+  }
 
   function updateActive() {
     ticking = false;
@@ -131,10 +147,22 @@ function initScrollSpy() {
       }
     }
 
+    // Ensure the last section highlights when scrolled to the bottom
+    if (sections.length > 0 && (window.scrollY + window.innerHeight) >= (document.documentElement.scrollHeight - 24)) {
+      currentId = sections[sections.length - 1].getAttribute('id');
+    }
+
+    let activeLink = null;
     navLinks.forEach((link) => {
-      const href = link.getAttribute('href');
-      link.classList.toggle('active', href === `#${currentId}`);
+      const isActive = link.getAttribute('href') === `#${currentId}`;
+      link.classList.toggle('active', isActive);
+      if (isActive) activeLink = link;
     });
+
+    if (currentId !== lastActiveId) {
+      lastActiveId = currentId;
+      scrollNavToActive(activeLink);
+    }
   }
 
   window.addEventListener('scroll', () => {
@@ -165,6 +193,8 @@ function initScrollSpy() {
           } catch (_) {}
           if (link.classList.contains('nav-link')) {
             navLinks.forEach((l) => l.classList.toggle('active', l === link));
+            lastActiveId = targetId.slice(1);
+            scrollNavToActive(link);
           }
         }
       }
