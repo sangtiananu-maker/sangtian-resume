@@ -2142,9 +2142,13 @@ body.notes-hidden .speaker-notes-drawer {
 @media (max-width: 768px) {
   /* 1. Global Box Constraints & Overflow Prevention */
   html, body {
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     width: 100% !important;
     max-width: 100% !important;
+  }
+
+  main {
+    padding-top: 54px !important;
   }
 
   *, *::before, *::after {
@@ -2167,7 +2171,12 @@ body.notes-hidden .speaker-notes-drawer {
 
   /* 2. HUD Header & Navigation (Smooth Horizontal Swipeable Pill Track) */
   .hud-header {
-    top: 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 100 !important;
   }
 
   .hud-inner {
