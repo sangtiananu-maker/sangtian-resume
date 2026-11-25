@@ -231,7 +231,7 @@ function initMilestoneTabs() {
   });
 }
 
-// 5. Smartphone Touch Scroll Momentum Damping & Selection Guard
+// 5. Smartphone Touch Scroll Control (Android / iOS Calm Momentum) & Selection Guard
 function initMobileScrollDamping() {
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
   if (!isTouchDevice) return;
@@ -244,6 +244,8 @@ function initMobileScrollDamping() {
   });
 
   let tracking = false;
+  let isVerticalDrag = false;
+  let startX = 0;
   let startY = 0;
   let lastY = 0;
   let lastTime = 0;
@@ -261,62 +263,111 @@ function initMobileScrollDamping() {
     stopMomentum();
     if (window.innerWidth > 768 || e.touches.length !== 1) {
       tracking = false;
+      isVerticalDrag = false;
       return;
     }
     if (e.target && e.target.closest && e.target.closest('.hud-nav')) {
       tracking = false;
+      isVerticalDrag = false;
       return;
     }
     tracking = true;
+    isVerticalDrag = false;
+    startX = e.touches[0].clientX;
     startY = lastY = e.touches[0].clientY;
     lastTime = performance.now();
     velocity = 0;
   }, { passive: true });
 
+  // Non-passive touchmove intercepts Chrome Android's compositor runaway fling
   window.addEventListener('touchmove', (e) => {
     if (!tracking || e.touches.length !== 1) return;
-    const now = performance.now();
+
+    const x = e.touches[0].clientX;
     const y = e.touches[0].clientY;
-    const dt = now - lastTime;
-    if (dt > 0) {
-      const dy = lastY - y;
-      const instantV = dy / dt;
-      velocity = velocity * 0.4 + instantV * 0.6;
-      lastY = y;
-      lastTime = now;
+    const totalDx = Math.abs(x - startX);
+    const totalDy = Math.abs(y - startY);
+
+    // Determine gesture direction once finger moves > 3px
+    if (!isVerticalDrag) {
+      if (totalDx > totalDy && totalDx > 4) {
+        // Horizontal gesture — release to browser
+        tracking = false;
+        return;
+      }
+      if (totalDy >= 3) {
+        isVerticalDrag = true;
+      } else {
+        return;
+      }
     }
-  }, { passive: true });
+
+    const dy = lastY - y; // positive = scroll down, negative = scroll up
+
+    // Allow native pull-to-refresh when already at very top and pulling down
+    if (window.scrollY <= 0 && dy < 0) {
+      lastY = y;
+      lastTime = performance.now();
+      return;
+    }
+
+    // Take ownership of vertical scroll so Android doesn't launch runaway fling
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+
+    const now = performance.now();
+    const dt = now - lastTime;
+
+    // Slightly calmer 0.85x drag scale for controlled, comfortable reading
+    const dragScale = 0.85;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + dy * dragScale));
+    window.scrollTo(0, nextY);
+
+    if (dt > 0 && dt < 120) {
+      const instantV = (dy * dragScale) / dt;
+      velocity = velocity * 0.35 + instantV * 0.65;
+    }
+    lastY = y;
+    lastTime = now;
+  }, { passive: false });
 
   window.addEventListener('touchend', () => {
     if (!tracking) return;
+    const wasVertical = isVerticalDrag;
     tracking = false;
+    isVerticalDrag = false;
+
+    if (!wasVertical) return;
 
     const sinceLastMove = performance.now() - lastTime;
-    const totalMove = Math.abs(startY - lastY);
 
-    // Only apply gentle controlled deceleration for actual vertical swipes
-    if (sinceLastMove < 90 && totalMove > 10 && Math.abs(velocity) > 0.15) {
-      // Cancel browser's runaway native fling immediately
-      const currentY = window.scrollY;
-      window.scrollTo(0, currentY);
-
-      // Convert px/ms to damped px/frame and cap max speed
-      const maxVelPerFrame = 22;
-      let vFrame = velocity * 16 * 0.55;
+    // Apply calm, capped, refresh-rate-independent deceleration (60Hz/90Hz/120Hz)
+    if (sinceLastMove < 85 && Math.abs(velocity) > 0.12) {
+      const maxVelPerFrame = 18; // ~180px max glide on hard flick
+      let vFrame = velocity * 16.67 * 0.4;
       if (vFrame > maxVelPerFrame) vFrame = maxVelPerFrame;
       if (vFrame < -maxVelPerFrame) vFrame = -maxVelPerFrame;
 
-      const friction = 0.88;
+      const frictionPer60Hz = 0.9;
+      let prevTime = performance.now();
 
-      function step() {
-        vFrame *= friction;
-        if (Math.abs(vFrame) < 0.4) {
+      function step(now) {
+        const dt = Math.min(40, Math.max(1, now - prevTime));
+        prevTime = now;
+        const frameScale = dt / 16.67;
+
+        vFrame *= Math.pow(frictionPer60Hz, frameScale);
+        if (Math.abs(vFrame) < 0.35) {
           animFrameId = null;
           return;
         }
+
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + vFrame));
+        const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + vFrame * frameScale));
         window.scrollTo(0, nextY);
+
         if (nextY <= 0 || nextY >= maxScroll) {
           animFrameId = null;
           return;
@@ -330,6 +381,7 @@ function initMobileScrollDamping() {
 
   window.addEventListener('touchcancel', () => {
     tracking = false;
+    isVerticalDrag = false;
     stopMomentum();
   }, { passive: true });
 }
