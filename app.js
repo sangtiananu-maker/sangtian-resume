@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCosmicCanvas();
   initScrollSpy();
   initMilestoneTabs();
+  initMobileScrollDamping();
 });
 
 // 1. Futuristic Boot / Welcome Sequence Animation
@@ -113,17 +114,19 @@ function initCosmicCanvas() {
 function initScrollSpy() {
   const sections = Array.from(document.querySelectorAll('section[id]'));
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
+  const header = document.querySelector('.hud-header');
+  let ticking = false;
 
   function updateActive() {
-    const header = document.querySelector('.hud-header');
+    ticking = false;
     const headerHeight = header ? header.offsetHeight : 68;
     const scrollPos = window.scrollY + headerHeight + 24;
     let currentId = sections[0]?.getAttribute('id') || 'hero';
 
     for (let i = 0; i < sections.length; i++) {
       const sec = sections[i];
-      const secTop = sec.offsetTop;
-      if (scrollPos >= secTop) {
+      if (scrollPos >= sec.offsetTop) {
         currentId = sec.getAttribute('id');
       }
     }
@@ -134,22 +137,25 @@ function initScrollSpy() {
     });
   }
 
-  window.addEventListener('scroll', updateActive, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateActive);
+    }
+  }, { passive: true });
   updateActive();
 
-  // Precise smooth navigation click handler
-  navLinks.forEach((link) => {
+  // Precise smooth navigation click handler for all in-page anchors
+  anchorLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
       const targetId = link.getAttribute('href');
-      if (targetId && targetId.startsWith('#')) {
+      if (targetId && targetId.length > 1 && targetId.startsWith('#')) {
         const targetSec = document.querySelector(targetId);
         if (targetSec) {
           e.preventDefault();
-          const header = document.querySelector('.hud-header');
           const headerHeight = header ? header.offsetHeight : 68;
-          // Calculate exact document offset
           const rect = targetSec.getBoundingClientRect();
-          const targetY = rect.top + window.scrollY - headerHeight;
+          const targetY = Math.max(0, rect.top + window.scrollY - headerHeight);
           window.scrollTo({
             top: targetY,
             behavior: 'smooth'
@@ -157,7 +163,9 @@ function initScrollSpy() {
           try {
             history.pushState(null, '', targetId);
           } catch (_) {}
-          navLinks.forEach((l) => l.classList.toggle('active', l === link));
+          if (link.classList.contains('nav-link')) {
+            navLinks.forEach((l) => l.classList.toggle('active', l === link));
+          }
         }
       }
     });
@@ -191,4 +199,107 @@ function initMilestoneTabs() {
       });
     });
   });
+}
+
+// 5. Smartphone Touch Scroll Momentum Damping & Selection Guard
+function initMobileScrollDamping() {
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+  if (!isTouchDevice) return;
+
+  // Extra safeguard against accidental text selection on mobile
+  document.addEventListener('selectstart', (e) => {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+    }
+  });
+
+  let tracking = false;
+  let startY = 0;
+  let lastY = 0;
+  let lastTime = 0;
+  let velocity = 0; // px per ms
+  let animFrameId = null;
+
+  function stopMomentum() {
+    if (animFrameId !== null) {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = null;
+    }
+  }
+
+  window.addEventListener('touchstart', (e) => {
+    stopMomentum();
+    if (window.innerWidth > 768 || e.touches.length !== 1) {
+      tracking = false;
+      return;
+    }
+    if (e.target && e.target.closest && e.target.closest('.hud-nav')) {
+      tracking = false;
+      return;
+    }
+    tracking = true;
+    startY = lastY = e.touches[0].clientY;
+    lastTime = performance.now();
+    velocity = 0;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!tracking || e.touches.length !== 1) return;
+    const now = performance.now();
+    const y = e.touches[0].clientY;
+    const dt = now - lastTime;
+    if (dt > 0) {
+      const dy = lastY - y;
+      const instantV = dy / dt;
+      velocity = velocity * 0.4 + instantV * 0.6;
+      lastY = y;
+      lastTime = now;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    if (!tracking) return;
+    tracking = false;
+
+    const sinceLastMove = performance.now() - lastTime;
+    const totalMove = Math.abs(startY - lastY);
+
+    // Only apply gentle controlled deceleration for actual vertical swipes
+    if (sinceLastMove < 90 && totalMove > 10 && Math.abs(velocity) > 0.15) {
+      // Cancel browser's runaway native fling immediately
+      const currentY = window.scrollY;
+      window.scrollTo(0, currentY);
+
+      // Convert px/ms to damped px/frame and cap max speed
+      const maxVelPerFrame = 22;
+      let vFrame = velocity * 16 * 0.55;
+      if (vFrame > maxVelPerFrame) vFrame = maxVelPerFrame;
+      if (vFrame < -maxVelPerFrame) vFrame = -maxVelPerFrame;
+
+      const friction = 0.88;
+
+      function step() {
+        vFrame *= friction;
+        if (Math.abs(vFrame) < 0.4) {
+          animFrameId = null;
+          return;
+        }
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + vFrame));
+        window.scrollTo(0, nextY);
+        if (nextY <= 0 || nextY >= maxScroll) {
+          animFrameId = null;
+          return;
+        }
+        animFrameId = requestAnimationFrame(step);
+      }
+
+      animFrameId = requestAnimationFrame(step);
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchcancel', () => {
+    tracking = false;
+    stopMomentum();
+  }, { passive: true });
 }

@@ -2140,11 +2140,19 @@ body.notes-hidden .speaker-notes-drawer {
    ========================================================================== */
 
 @media (max-width: 768px) {
-  /* 1. Global Box Constraints & Overflow Prevention */
+  /* 1. Global Box Constraints, Overflow & Mobile Touch UX */
   html, body {
     overflow-x: clip !important;
     width: 100% !important;
     max-width: 100% !important;
+    scroll-behavior: auto !important;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    caret-color: transparent !important;
   }
 
   main {
@@ -2153,6 +2161,11 @@ body.notes-hidden .speaker-notes-drawer {
 
   *, *::before, *::after {
     box-sizing: border-box !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    caret-color: transparent !important;
   }
 
   .container {
