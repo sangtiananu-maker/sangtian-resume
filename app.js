@@ -60,7 +60,9 @@ function initCosmicCanvas() {
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
-  const particles = Array.from({ length: 48 }, () => ({
+  const isMobile = window.innerWidth <= 768;
+  const particleCount = isMobile ? 18 : 48;
+  const particles = Array.from({ length: particleCount }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
     r: Math.random() * 1.6 + 0.4,
@@ -231,7 +233,7 @@ function initMilestoneTabs() {
   });
 }
 
-// 5. Smartphone Touch Scroll Control (Android / iOS Calm Momentum) & Selection Guard
+// 5. Smartphone Touch Scroll Physics (1:1 Direct Manipulation + True Exponential Decay) & Selection Guard
 function initMobileScrollDamping() {
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
   if (!isTouchDevice) return;
@@ -243,13 +245,21 @@ function initMobileScrollDamping() {
     }
   });
 
+  // Physics constants (exact continuous exponential decay, like iOS/Android Compose exponentialDecay)
+  // d = 0.9958 per ms -> time constant tau ≈ 238ms
+  // Normal swipe (1.8 px/ms) glides ~430px smoothly; hard flick (~5 px/ms) glides ~1,100px (never shoots top-to-bottom)
+  const DECEL_RATE_PER_MS = 0.9958;
+  const LAMBDA = -Math.log(DECEL_RATE_PER_MS); // ≈ 0.004209 / ms
+  const MAX_RELEASE_VEL = 5.5; // px/ms soft ceiling via tanh (smooth, no abrupt wall)
+  const STOP_VEL = 0.025; // px/ms
+
   let tracking = false;
   let isVerticalDrag = false;
   let startX = 0;
   let startY = 0;
   let lastY = 0;
-  let lastTime = 0;
-  let velocity = 0; // px per ms
+  let virtualY = 0;
+  let samples = []; // Sliding window of { y, t } over last ~90ms (Android VelocityTracker pattern)
   let animFrameId = null;
 
   function stopMomentum() {
@@ -257,6 +267,26 @@ function initMobileScrollDamping() {
       cancelAnimationFrame(animFrameId);
       animFrameId = null;
     }
+  }
+
+  function computeReleaseVelocity(now) {
+    // Keep only samples within the last 90ms
+    const cutoff = now - 90;
+    while (samples.length > 0 && samples[0].t < cutoff) {
+      samples.shift();
+    }
+    if (samples.length < 2) return 0;
+
+    // If finger paused > 60ms before lift, velocity is 0
+    const latest = samples[samples.length - 1];
+    if (now - latest.t > 60) return 0;
+
+    const oldest = samples[0];
+    const dt = latest.t - oldest.t;
+    if (dt < 8) return 0;
+
+    // Positive = scrolling down (finger moved up: oldest.y > latest.y)
+    return (oldest.y - latest.y) / dt;
   }
 
   window.addEventListener('touchstart', (e) => {
@@ -275,11 +305,11 @@ function initMobileScrollDamping() {
     isVerticalDrag = false;
     startX = e.touches[0].clientX;
     startY = lastY = e.touches[0].clientY;
-    lastTime = performance.now();
-    velocity = 0;
+    virtualY = window.scrollY;
+    samples = [{ y: startY, t: performance.now() }];
   }, { passive: true });
 
-  // Non-passive touchmove intercepts Chrome Android's compositor runaway fling
+  // Non-passive touchmove: strict 1:1 direct manipulation with zero lag
   window.addEventListener('touchmove', (e) => {
     if (!tracking || e.touches.length !== 1) return;
 
@@ -288,49 +318,40 @@ function initMobileScrollDamping() {
     const totalDx = Math.abs(x - startX);
     const totalDy = Math.abs(y - startY);
 
-    // Determine gesture direction once finger moves > 3px
     if (!isVerticalDrag) {
-      if (totalDx > totalDy && totalDx > 4) {
-        // Horizontal gesture — release to browser
+      if (totalDx > totalDy && totalDx > 5) {
         tracking = false;
         return;
       }
       if (totalDy >= 3) {
         isVerticalDrag = true;
+        virtualY = window.scrollY;
       } else {
         return;
       }
     }
 
-    const dy = lastY - y; // positive = scroll down, negative = scroll up
+    const dy = lastY - y; // 1:1 finger movement
 
     // Allow native pull-to-refresh when already at very top and pulling down
-    if (window.scrollY <= 0 && dy < 0) {
+    if (virtualY <= 0 && dy < 0) {
       lastY = y;
-      lastTime = performance.now();
+      samples.push({ y, t: performance.now() });
       return;
     }
 
-    // Take ownership of vertical scroll so Android doesn't launch runaway fling
     if (e.cancelable) {
       e.preventDefault();
     }
 
     const now = performance.now();
-    const dt = now - lastTime;
-
-    // Slightly calmer 0.85x drag scale for controlled, comfortable reading
-    const dragScale = 0.85;
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + dy * dragScale));
-    window.scrollTo(0, nextY);
+    virtualY = Math.max(0, Math.min(maxScroll, virtualY + dy));
+    window.scrollTo(0, virtualY);
 
-    if (dt > 0 && dt < 120) {
-      const instantV = (dy * dragScale) / dt;
-      velocity = velocity * 0.35 + instantV * 0.65;
-    }
     lastY = y;
-    lastTime = now;
+    samples.push({ y, t: now });
+    if (samples.length > 12) samples.shift();
   }, { passive: false });
 
   window.addEventListener('touchend', () => {
@@ -341,42 +362,34 @@ function initMobileScrollDamping() {
 
     if (!wasVertical) return;
 
-    const sinceLastMove = performance.now() - lastTime;
+    const rawVel = computeReleaseVelocity(performance.now());
+    if (Math.abs(rawVel) <= STOP_VEL) return;
 
-    // Apply calm, capped, refresh-rate-independent deceleration (60Hz/90Hz/120Hz)
-    if (sinceLastMove < 85 && Math.abs(velocity) > 0.12) {
-      const maxVelPerFrame = 18; // ~180px max glide on hard flick
-      let vFrame = velocity * 16.67 * 0.4;
-      if (vFrame > maxVelPerFrame) vFrame = maxVelPerFrame;
-      if (vFrame < -maxVelPerFrame) vFrame = -maxVelPerFrame;
+    // 100% continuous release velocity at normal speeds; smooth tanh soft-cap only for extreme flicks
+    let vel = MAX_RELEASE_VEL * Math.tanh(rawVel / MAX_RELEASE_VEL);
+    let prevTime = performance.now();
 
-      const frictionPer60Hz = 0.9;
-      let prevTime = performance.now();
+    function step(now) {
+      const dt = Math.min(48, Math.max(1, now - prevTime));
+      prevTime = now;
 
-      function step(now) {
-        const dt = Math.min(40, Math.max(1, now - prevTime));
-        prevTime = now;
-        const frameScale = dt / 16.67;
+      // Exact analytical integral of v(t) = v0 * exp(-LAMBDA * t) over [0, dt]
+      const decay = Math.exp(-LAMBDA * dt);
+      const deltaY = vel * ((1 - decay) / LAMBDA);
+      vel *= decay;
 
-        vFrame *= Math.pow(frictionPer60Hz, frameScale);
-        if (Math.abs(vFrame) < 0.35) {
-          animFrameId = null;
-          return;
-        }
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      virtualY = Math.max(0, Math.min(maxScroll, virtualY + deltaY));
+      window.scrollTo(0, virtualY);
 
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        const nextY = Math.max(0, Math.min(maxScroll, window.scrollY + vFrame * frameScale));
-        window.scrollTo(0, nextY);
-
-        if (nextY <= 0 || nextY >= maxScroll) {
-          animFrameId = null;
-          return;
-        }
-        animFrameId = requestAnimationFrame(step);
+      if (Math.abs(vel) < STOP_VEL || virtualY <= 0 || virtualY >= maxScroll) {
+        animFrameId = null;
+        return;
       }
-
       animFrameId = requestAnimationFrame(step);
     }
+
+    animFrameId = requestAnimationFrame(step);
   }, { passive: true });
 
   window.addEventListener('touchcancel', () => {
