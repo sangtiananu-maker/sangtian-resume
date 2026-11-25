@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCosmicCanvas();
   initScrollSpy();
   initMilestoneTabs();
-  initMobileScrollDamping();
+  initMobileSelectionGuard();
 });
 
 // 1. Futuristic Boot / Welcome Sequence Animation
@@ -107,20 +107,21 @@ function initCosmicCanvas() {
         }
       }
     }
-    requestAnimationFrame(draw);
+    if (!isMobile) {
+      requestAnimationFrame(draw);
+    }
   }
   draw();
 }
 
-// 3. Sticky Navigation Scroll-Spy & Smooth Navigation Handler
+// 3. Zero-Jank IntersectionObserver Scroll-Spy & Smooth Navigation Handler
 function initScrollSpy() {
   const sections = Array.from(document.querySelectorAll('section[id]'));
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
   const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
   const header = document.querySelector('.hud-header');
   const navContainer = document.querySelector('.hud-nav');
-  let ticking = false;
-  let lastActiveId = null;
+  let lastActiveId = sections[0]?.getAttribute('id') || 'hero';
 
   function scrollNavToActive(activeLink) {
     if (!navContainer || !activeLink) return;
@@ -136,44 +137,47 @@ function initScrollSpy() {
     });
   }
 
-  function updateActive() {
-    ticking = false;
-    const headerHeight = header ? header.offsetHeight : 68;
-    const scrollPos = window.scrollY + headerHeight + 24;
-    let currentId = sections[0]?.getAttribute('id') || 'hero';
-
-    for (let i = 0; i < sections.length; i++) {
-      const sec = sections[i];
-      if (scrollPos >= sec.offsetTop) {
-        currentId = sec.getAttribute('id');
-      }
-    }
-
-    // Ensure the last section highlights when scrolled to the bottom
-    if (sections.length > 0 && (window.scrollY + window.innerHeight) >= (document.documentElement.scrollHeight - 24)) {
-      currentId = sections[sections.length - 1].getAttribute('id');
-    }
-
+  function setActiveSection(id) {
+    if (!id || id === lastActiveId) return;
+    lastActiveId = id;
     let activeLink = null;
     navLinks.forEach((link) => {
-      const isActive = link.getAttribute('href') === `#${currentId}`;
+      const isActive = link.getAttribute('href') === `#${id}`;
       link.classList.toggle('active', isActive);
       if (isActive) activeLink = link;
     });
-
-    if (currentId !== lastActiveId) {
-      lastActiveId = currentId;
-      scrollNavToActive(activeLink);
-    }
+    scrollNavToActive(activeLink);
   }
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(updateActive);
-    }
-  }, { passive: true });
-  updateActive();
+  // Zero scroll-listener overhead: IntersectionObserver runs off the main scroll loop
+  if ('IntersectionObserver' in window && sections.length > 0) {
+    const visibleRatios = new Map();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visibleRatios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        });
+        // Pick the topmost intersecting section (or highest ratio if multiple)
+        let bestId = null;
+        let bestRatio = 0;
+        for (const sec of sections) {
+          const ratio = visibleRatios.get(sec.id) || 0;
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestId = sec.id;
+          }
+        }
+        if (bestId) {
+          setActiveSection(bestId);
+        }
+      },
+      {
+        rootMargin: '-18% 0px -55% 0px',
+        threshold: [0, 0.1, 0.25, 0.5]
+      }
+    );
+    sections.forEach((sec) => observer.observe(sec));
+  }
 
   // Precise smooth navigation click handler for all in-page anchors
   anchorLinks.forEach((link) => {
@@ -194,9 +198,7 @@ function initScrollSpy() {
             history.pushState(null, '', targetId);
           } catch (_) {}
           if (link.classList.contains('nav-link')) {
-            navLinks.forEach((l) => l.classList.toggle('active', l === link));
-            lastActiveId = targetId.slice(1);
-            scrollNavToActive(link);
+            setActiveSection(targetId.slice(1));
           }
         }
       }
@@ -233,168 +235,14 @@ function initMilestoneTabs() {
   });
 }
 
-// 5. Smartphone Touch Scroll Physics (1:1 Direct Manipulation + True Exponential Decay) & Selection Guard
-function initMobileScrollDamping() {
+// 5. Smartphone Selection Guard (Zero Touch-Scroll Interception -> Native 120fps Compositor Scroll)
+function initMobileSelectionGuard() {
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
   if (!isTouchDevice) return;
 
-  // Extra safeguard against accidental text selection on mobile
   document.addEventListener('selectstart', (e) => {
     if (window.innerWidth <= 768) {
       e.preventDefault();
     }
   });
-
-  // Physics constants (exact continuous exponential decay, like iOS/Android Compose exponentialDecay)
-  // d = 0.9958 per ms -> time constant tau ≈ 238ms
-  // Normal swipe (1.8 px/ms) glides ~430px smoothly; hard flick (~5 px/ms) glides ~1,100px (never shoots top-to-bottom)
-  const DECEL_RATE_PER_MS = 0.9958;
-  const LAMBDA = -Math.log(DECEL_RATE_PER_MS); // ≈ 0.004209 / ms
-  const MAX_RELEASE_VEL = 5.5; // px/ms soft ceiling via tanh (smooth, no abrupt wall)
-  const STOP_VEL = 0.025; // px/ms
-
-  let tracking = false;
-  let isVerticalDrag = false;
-  let startX = 0;
-  let startY = 0;
-  let lastY = 0;
-  let virtualY = 0;
-  let samples = []; // Sliding window of { y, t } over last ~90ms (Android VelocityTracker pattern)
-  let animFrameId = null;
-
-  function stopMomentum() {
-    if (animFrameId !== null) {
-      cancelAnimationFrame(animFrameId);
-      animFrameId = null;
-    }
-  }
-
-  function computeReleaseVelocity(now) {
-    // Keep only samples within the last 90ms
-    const cutoff = now - 90;
-    while (samples.length > 0 && samples[0].t < cutoff) {
-      samples.shift();
-    }
-    if (samples.length < 2) return 0;
-
-    // If finger paused > 60ms before lift, velocity is 0
-    const latest = samples[samples.length - 1];
-    if (now - latest.t > 60) return 0;
-
-    const oldest = samples[0];
-    const dt = latest.t - oldest.t;
-    if (dt < 8) return 0;
-
-    // Positive = scrolling down (finger moved up: oldest.y > latest.y)
-    return (oldest.y - latest.y) / dt;
-  }
-
-  window.addEventListener('touchstart', (e) => {
-    stopMomentum();
-    if (window.innerWidth > 768 || e.touches.length !== 1) {
-      tracking = false;
-      isVerticalDrag = false;
-      return;
-    }
-    if (e.target && e.target.closest && e.target.closest('.hud-nav')) {
-      tracking = false;
-      isVerticalDrag = false;
-      return;
-    }
-    tracking = true;
-    isVerticalDrag = false;
-    startX = e.touches[0].clientX;
-    startY = lastY = e.touches[0].clientY;
-    virtualY = window.scrollY;
-    samples = [{ y: startY, t: performance.now() }];
-  }, { passive: true });
-
-  // Non-passive touchmove: strict 1:1 direct manipulation with zero lag
-  window.addEventListener('touchmove', (e) => {
-    if (!tracking || e.touches.length !== 1) return;
-
-    const x = e.touches[0].clientX;
-    const y = e.touches[0].clientY;
-    const totalDx = Math.abs(x - startX);
-    const totalDy = Math.abs(y - startY);
-
-    if (!isVerticalDrag) {
-      if (totalDx > totalDy && totalDx > 5) {
-        tracking = false;
-        return;
-      }
-      if (totalDy >= 3) {
-        isVerticalDrag = true;
-        virtualY = window.scrollY;
-      } else {
-        return;
-      }
-    }
-
-    const dy = lastY - y; // 1:1 finger movement
-
-    // Allow native pull-to-refresh when already at very top and pulling down
-    if (virtualY <= 0 && dy < 0) {
-      lastY = y;
-      samples.push({ y, t: performance.now() });
-      return;
-    }
-
-    if (e.cancelable) {
-      e.preventDefault();
-    }
-
-    const now = performance.now();
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    virtualY = Math.max(0, Math.min(maxScroll, virtualY + dy));
-    window.scrollTo(0, virtualY);
-
-    lastY = y;
-    samples.push({ y, t: now });
-    if (samples.length > 12) samples.shift();
-  }, { passive: false });
-
-  window.addEventListener('touchend', () => {
-    if (!tracking) return;
-    const wasVertical = isVerticalDrag;
-    tracking = false;
-    isVerticalDrag = false;
-
-    if (!wasVertical) return;
-
-    const rawVel = computeReleaseVelocity(performance.now());
-    if (Math.abs(rawVel) <= STOP_VEL) return;
-
-    // 100% continuous release velocity at normal speeds; smooth tanh soft-cap only for extreme flicks
-    let vel = MAX_RELEASE_VEL * Math.tanh(rawVel / MAX_RELEASE_VEL);
-    let prevTime = performance.now();
-
-    function step(now) {
-      const dt = Math.min(48, Math.max(1, now - prevTime));
-      prevTime = now;
-
-      // Exact analytical integral of v(t) = v0 * exp(-LAMBDA * t) over [0, dt]
-      const decay = Math.exp(-LAMBDA * dt);
-      const deltaY = vel * ((1 - decay) / LAMBDA);
-      vel *= decay;
-
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      virtualY = Math.max(0, Math.min(maxScroll, virtualY + deltaY));
-      window.scrollTo(0, virtualY);
-
-      if (Math.abs(vel) < STOP_VEL || virtualY <= 0 || virtualY >= maxScroll) {
-        animFrameId = null;
-        return;
-      }
-      animFrameId = requestAnimationFrame(step);
-    }
-
-    animFrameId = requestAnimationFrame(step);
-  }, { passive: true });
-
-  window.addEventListener('touchcancel', () => {
-    tracking = false;
-    isVerticalDrag = false;
-    stopMomentum();
-  }, { passive: true });
 }

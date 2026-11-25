@@ -2182,7 +2182,7 @@ body.notes-hidden .speaker-notes-drawer {
     padding: 12px 0 28px !important;
   }
 
-  /* 2. HUD Header & Navigation (Smooth Horizontal Swipeable Pill Track) */
+  /* 2. HUD Header & Navigation (GPU-Composited 120fps Fixed Bar) */
   .hud-header {
     position: fixed !important;
     top: 0 !important;
@@ -2190,6 +2190,30 @@ body.notes-hidden .speaker-notes-drawer {
     right: 0 !important;
     width: 100% !important;
     z-index: 100 !important;
+    background: rgba(7, 10, 18, 0.94) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
+  }
+
+  .section:not(.hero-section) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  .role-card,
+  .bento-card,
+  .edu-card,
+  .constellation-card,
+  .telemetry-item,
+  .thesis-showcase {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .orbit-ring {
+    animation: none !important;
   }
 
   .hud-inner {
